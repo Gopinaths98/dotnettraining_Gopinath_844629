@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="mailModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="maildetails">
+          <Key>
+            <PropertyRef Name="mailid" />
+          </Key>
+          <Property Name="mailid" Type="int" Nullable="false" />
+          <Property Name="userid" Type="int" Nullable="false" />
+          <Property Name="mailfrom" Type="varchar" MaxLength="20" />
+          <Property Name="receiveddate" Type="date" />
+          <Property Name="msg" Type="varchar" MaxLength="100" />
+          <Property Name="subject" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="userinfo">
+          <Key>
+            <PropertyRef Name="userid" />
+          </Key>
+          <Property Name="userid" Type="int" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="20" />
+          <Property Name="pwd" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <Association Name="FK_maildetails_userinfo">
+          <End Role="userinfo" Type="Self.userinfo" Multiplicity="1" />
+          <End Role="maildetails" Type="Self.maildetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="userinfo">
+              <PropertyRef Name="userid" />
+            </Principal>
+            <Dependent Role="maildetails">
+              <PropertyRef Name="userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="mailModelStoreContainer">
+          <EntitySet Name="maildetails" EntityType="Self.maildetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="userinfo" EntityType="Self.userinfo" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_maildetails_userinfo" Association="Self.FK_maildetails_userinfo">
+            <End Role="userinfo" EntitySet="userinfo" />
+            <End Role="maildetails" EntitySet="maildetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="mailModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="maildetail">
+          <Key>
+            <PropertyRef Name="mailid" />
+          </Key>
+          <Property Name="mailid" Type="Int32" Nullable="false" />
+          <Property Name="userid" Type="Int32" Nullable="false" />
+          <Property Name="mailfrom" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="receiveddate" Type="DateTime" Precision="0" />
+          <Property Name="msg" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="subject" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="userinfo" Relationship="Self.FK_maildetails_userinfo" FromRole="maildetails" ToRole="userinfo" />
+        </EntityType>
+        <EntityType Name="userinfo">
+          <Key>
+            <PropertyRef Name="userid" />
+          </Key>
+          <Property Name="userid" Type="Int32" Nullable="false" />
+          <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="pwd" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="maildetails" Relationship="Self.FK_maildetails_userinfo" FromRole="userinfo" ToRole="maildetails" />
+        </EntityType>
+        <Association Name="FK_maildetails_userinfo">
+          <End Role="userinfo" Type="Self.userinfo" Multiplicity="1" />
+          <End Role="maildetails" Type="Self.maildetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="userinfo">
+              <PropertyRef Name="userid" />
+            </Principal>
+            <Dependent Role="maildetails">
+              <PropertyRef Name="userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="mailEntities2" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="maildetails" EntityType="Self.maildetail" />
+          <EntitySet Name="userinfoes" EntityType="Self.userinfo" />
+          <AssociationSet Name="FK_maildetails_userinfo" Association="Self.FK_maildetails_userinfo">
+            <End Role="userinfo" EntitySet="userinfoes" />
+            <End Role="maildetails" EntitySet="maildetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="mailModelStoreContainer" CdmEntityContainer="mailEntities2">
+          <EntitySetMapping Name="maildetails">
+            <EntityTypeMapping TypeName="mailModel.maildetail">
+              <MappingFragment StoreEntitySet="maildetails">
+                <ScalarProperty Name="mailid" ColumnName="mailid" />
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="mailfrom" ColumnName="mailfrom" />
+                <ScalarProperty Name="receiveddate" ColumnName="receiveddate" />
+                <ScalarProperty Name="msg" ColumnName="msg" />
+                <ScalarProperty Name="subject" ColumnName="subject" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="userinfoes">
+            <EntityTypeMapping TypeName="mailModel.userinfo">
+              <MappingFragment StoreEntitySet="userinfo">
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="pwd" ColumnName="pwd" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
